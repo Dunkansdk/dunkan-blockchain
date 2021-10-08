@@ -26,7 +26,4 @@ class Transaction():
 
     ## TODO Improve this method.
     def equals(self, transaction):
-        if self.id == transaction.id:
-            return True
-        else:
-            return False
+        return self.id == transaction.id
