@@ -1,10 +1,12 @@
 from Block import Block
 from BlockchainUtils import BlockchainUtils
+from AccountModel import AccountModel
 
 class Blockchain():
     
     def __init__(self):
         self.blocks = [Block.genesis()]
+        self.accountModel = AccountModel()
 
     def addBlock(self, block):
         self.blocks.append(block)
@@ -23,3 +25,19 @@ class Blockchain():
     def lastBlockHashValid(self, block):
         latestBlockchainBlockHash = BlockchainUtils.hash(self.blocks[-1].payload()).hexdigest()
         return latestBlockchainBlockHash == block.lastHash
+
+    def getCoveredTransactionSet(self, transactions):
+        coveredTransactions = []
+        for transaction in transactions:
+            if self.transactionCovered(transaction):
+                coveredTransactions.append(transaction)
+            else:
+                print('Transaction is not covered by sender')
+        return coveredTransactions
+
+    def transactionCovered(self, transaction):
+        if transaction.type == 'EXCHANGE':
+            return True
+            
+        senderBalance = self.accountModel.getBalance(transaction.senderPublicKey)
+        return senderBalance >= transaction.amount

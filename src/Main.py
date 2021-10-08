@@ -10,13 +10,28 @@ from AccountModel import AccountModel
 
 if __name__ == '__main__':
     
-    wallet = Wallet()
-    accountModel = AccountModel()
+    blockchain = Blockchain()
+    pool = TransactionPool()
+    
+    dunkanWallet = Wallet()
+    boneWallet = Wallet()
+    exchangeWallet = Wallet()
 
-    accountModel.updateBalance(wallet.publicKeyString(), 10)
-    accountModel.updateBalance(wallet.publicKeyString(), -5)
+    # necessary for the p2p nodes architecture
+    exchangeTransaction = exchangeWallet.createTransaction(dunkanWallet.publicKeyString(), 10, 'EXCHANGE')
 
-    pprint.pprint(accountModel.balances)
+    if not pool.transactionExists(exchangeTransaction):
+        pool.addTransaction(exchangeTransaction)
+
+    # dunkan wants to send 5 token to bone
+    transaction = dunkanWallet.createTransaction(boneWallet.publicKeyString(), 5, 'TRANSFER')
+
+    if not pool.transactionExists(transaction):
+        pool.addTransaction(transaction)
+
+    coveredTransaction = blockchain.getCoveredTransactionSet(pool.transactions)
+
+    pprint.pprint(coveredTransaction)
 
     
     
