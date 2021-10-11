@@ -27,8 +27,10 @@ if __name__ == '__main__':
     coveredTransaction = blockchain.getCoveredTransactionSet(pool.transactions)
     lastHash = BlockchainUtils.hash(blockchain.blocks[-1].payload()).hexdigest()
     blockCount = blockchain.blocks[-1].blockCount + 1
-    blockOne = Block(coveredTransaction, lastHash, forgerWallet.publicKeyString(), blockCount)
+    blockOne = forgerWallet.createBlock(coveredTransaction, lastHash, blockCount)
     blockchain.addBlock(blockOne)
+
+    pool.remove_from_pool(blockOne.transactions)
 
     # dunkan wants to send 5 token to bone
     transaction = dunkanWallet.createTransaction(boneWallet.publicKeyString(), 5, 'TRANSFER')
@@ -39,8 +41,10 @@ if __name__ == '__main__':
     coveredTransaction = blockchain.getCoveredTransactionSet(pool.transactions)
     lastHash = BlockchainUtils.hash(blockchain.blocks[-1].payload()).hexdigest()
     blockCount = blockchain.blocks[-1].blockCount + 1
-    blockTwo = Block(coveredTransaction, lastHash, forgerWallet.publicKeyString(), blockCount)
+    blockTwo = forgerWallet.createBlock(coveredTransaction, lastHash, blockCount)
     blockchain.addBlock(blockTwo)
+
+    pool.remove_from_pool(blockTwo.transactions)
 
     pprint.pprint(blockchain.toJson())
 
