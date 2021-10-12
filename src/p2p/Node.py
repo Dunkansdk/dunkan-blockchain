@@ -1,7 +1,7 @@
 from TransactionPool import TransactionPool
 from Wallet import Wallet
 from Blockchain import Blockchain
-from SocketCommunication import SocketCommunication
+from p2p.SocketCommunication import SocketCommunication
 
 class Node():
     

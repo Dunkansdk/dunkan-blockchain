@@ -1,7 +1,7 @@
 import pprint
 import sys
 
-from Node import Node
+from p2p.Node import Node
 
 if __name__ == '__main__':
 
