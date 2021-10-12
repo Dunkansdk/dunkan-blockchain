@@ -12,7 +12,7 @@ class SocketCommunication(Node):
         self.peers = []
         self.peer_discovery_handler = PeerDiscoveryHandler(self)
         self.socket_connector = SocketConnector(ip, port)
-        self.debug = True
+        #self.debug = True
 
     def connect_first_node(self):
         if self.socket_connector.port != 10001:
