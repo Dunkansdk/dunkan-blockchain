@@ -42,6 +42,10 @@ class SocketCommunication(Node):
         elif message.message_type == 'BLOCK':
             block = message.data
             self.node.handle_block(block)
+        elif message.message_type == 'BLOCKCHAIN_REQUEST':
+            self.node.handle_blockchain_request(node)
+        elif message.message_type == 'BLOCKCHAIN':
+            self.node.handle_blockchain(message.data)
         return super().node_message(node, message)
  
     def send(self, receiver, data):
