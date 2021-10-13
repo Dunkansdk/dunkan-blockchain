@@ -1,0 +1,43 @@
+from consensus.Lot import Lot
+from BlockchainUtils import BlockchainUtils
+
+class ProofOfStake():
+
+    def __init__(self):
+        self.stakers = {}
+
+    def update(self, public_key_string, stake):
+        if public_key_string in self.stakers.keys():
+            self.stakers[public_key_string] += stake
+        else:
+            self.stakers[public_key_string] = stake
+
+    def get(self, public_key_string):
+        if public_key_string in self.stakers.keys():
+            return self.stakers[public_key_string]
+        else:
+            return None
+
+    def validator_lots(self, seed):
+        lots = []
+        for validator in self.stakers.keys():
+            for stake in range(self.get(validator)):
+                lots.append(Lot(validator, stake + 1, seed))
+        return lots
+    
+    def winner(self, lots, seed):
+        winner_lot = None
+        least_offset = None
+        ref_hash_int_value = int(BlockchainUtils.hash(seed).hexdigest(), 16)
+        for lot in lots:
+            lot_int_value = int(lot.lot_hash(), 16)
+            offset = abs(lot_int_value - ref_hash_int_value)
+            if least_offset is None or offset < least_offset:
+                least_offset = offset
+                winner_lot = lot
+        return winner_lot
+
+    def forger(self, last_block_hash):
+        lots = self.validator_lots(last_block_hash)
+        winner_lot = self.winner(lots, last_block_hash)
+        return winner_lot.public_key
