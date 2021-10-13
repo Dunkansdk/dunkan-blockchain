@@ -18,7 +18,8 @@ class SocketCommunication(Node):
         if self.socket_connector.port != 10001:
             self.connect_with_node('localhost', 10001)
 
-    def start_socket_communication(self):
+    def start_socket_communication(self, node):
+        self.node = node
         self.start()
         self.peer_discovery_handler.start()
         self.connect_first_node()
@@ -31,11 +32,14 @@ class SocketCommunication(Node):
         self.peer_discovery_handler.handshake(node)
         #return super().outbound_node_connected(node)
 
-    def node_message(self, node, data):
-        data = BlockchainUtils.decode(json.dumps(data))
-        if data.message_type == 'DISCOVERY':
-            self.peer_discovery_handler.handle_message(data)
-        return super().node_message(node, data)
+    def node_message(self, node, message):
+        message = BlockchainUtils.decode(json.dumps(message))
+        if message.message_type == 'DISCOVERY':
+            self.peer_discovery_handler.handle_message(message)
+        elif message.message_type == 'TRANSACTION':
+            transaction = message.data
+            self.node.handle_transaction(transaction)
+        return super().node_message(node, message)
  
     def send(self, receiver, data):
         self.send_to_node(receiver, data)

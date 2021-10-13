@@ -3,7 +3,7 @@ class TransactionPool():
     def __init__(self):
         self.transactions = []
 
-    def addTransaction(self, transaction):
+    def add_transaction(self, transaction):
         self.transactions.append(transaction)
 
     def transaction_exists(self, transaction):
