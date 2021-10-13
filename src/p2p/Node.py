@@ -5,16 +5,19 @@ from Blockchain import Blockchain
 from p2p.Message import Message
 from p2p.SocketCommunication import SocketCommunication
 from rest.NodeAPI import NodeAPI
+import sys
 
 class Node():
     
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, key_file = None):
         self.p2p = None
         self.ip = ip
         self.port = port
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
         self.blockchain = Blockchain()
+        if key_file is not None:
+            self.wallet.from_key(sys.path[0] + key_file)
 
     def start_p2p(self):
         self.p2p = SocketCommunication(self.ip, self.port)
@@ -31,8 +34,24 @@ class Node():
         signer_public_key = transaction.sender_public_key
         signature_valid = Wallet.signature_valid(data, signature, signer_public_key)
         transaction_exists = self.transaction_pool.transaction_exists(transaction)
-        if not transaction_exists and signature_valid:
+        transaction_in_block = self.blockchain.transaction_exists(transaction)
+        if not transaction_exists and not transaction_in_block and signature_valid:
             self.transaction_pool.add_transaction(transaction)
             message = Message(self.p2p.socket_connector, 'TRANSACTION', transaction)
             encoded_message = BlockchainUtils.encode(message)
             self.p2p.broadcast(encoded_message)
+            # its time to select a new forger?
+            if self.transaction_pool.forger_required():
+                self.forge()
+
+    def forge(self):
+        forger = self.blockchain.next_forger()
+        if forger == self.wallet.public_key_string():
+            print('i am the next forger')
+            block = self.blockchain.create_block(self.transaction_pool.transactions, self.wallet)
+            self.transaction_pool.remove_from_pool(block.transactions)
+            message = Message(self.p2p.socket_connector, 'BLOCK', block)
+            encoded_message = BlockchainUtils.encode(message)
+            self.p2p.broadcast(encoded_message)
+        else:
+            print('i am not the next forger')

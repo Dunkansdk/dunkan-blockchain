@@ -1,10 +1,16 @@
 from consensus.Lot import Lot
 from BlockchainUtils import BlockchainUtils
-
+import sys
 class ProofOfStake():
 
     def __init__(self):
         self.stakers = {}
+        self.genesis_node_stake()
+
+    # Create a default staker to process transactions
+    def genesis_node_stake(self):
+        genesis_public_key = open(sys.path[0] + '/keys/genesisPublicKey.pem', 'r').read()
+        self.stakers[genesis_public_key] = 1
 
     def update(self, public_key_string, stake):
         if public_key_string in self.stakers.keys():

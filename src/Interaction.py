@@ -8,7 +8,7 @@ if __name__ == '__main__':
     dunkan = Wallet()
     exchange = Wallet()
 
-    transaction = exchange.createTransaction(dunkan.public_key_string(), 10, 'EXCHANGE')
+    transaction = exchange.create_transaction(dunkan.public_key_string(), 10, 'EXCHANGE')
 
     url = 'http://localhost:5000/transaction'
     package = {'transaction': BlockchainUtils.encode(transaction)}

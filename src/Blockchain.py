@@ -1,12 +1,14 @@
 from Block import Block
 from BlockchainUtils import BlockchainUtils
 from AccountModel import AccountModel
+from consensus.ProofOfStake import ProofOfStake
 
 class Blockchain():
     
     def __init__(self):
         self.blocks = [Block.genesis()]
         self.account_model = AccountModel()
+        self.pos = ProofOfStake()
 
     def addBlock(self, block):
         self.execute_transactions(block.transactions)
@@ -52,7 +54,28 @@ class Blockchain():
         sender = transaction.sender_public_key
         receiver = transaction.receiver_public_key
         amount = transaction.amount
-        # substract amount
-        self.account_model.update_balance(sender, -amount)
-        # add amount
-        self.account_model.update_balance(receiver, amount)
+        if transaction.type == 'STAKE' and sender == receiver:
+            self.pos.update(sender, amount)
+            self.account_model.update_balance(sender, -amount)
+        else:
+            self.account_model.update_balance(sender, -amount)
+            self.account_model.update_balance(receiver, amount)
+
+    def next_forger(self):
+        last_block_hash = BlockchainUtils.hash(self.blocks[-1].payload()).hexdigest()
+        return self.pos.forger(last_block_hash)
+
+    def create_block(self, transactions_from_pool, forger_wallet):
+        covered_transactions = self.get_covered_transaction_set(transactions_from_pool)
+        self.execute_transactions(covered_transactions)
+        block = forger_wallet.create_block(covered_transactions, 
+            BlockchainUtils.hash(self.blocks[-1].payload()).hexdigest(), len(self.blocks))
+        self.blocks.append(block)
+        return block
+
+    def transaction_exists(self, transaction):
+        for block in self.blocks:
+            for block_transaction in block.transactions:
+                if transaction.equals(block_transaction):
+                    return True
+        return False
