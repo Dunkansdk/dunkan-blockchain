@@ -4,25 +4,25 @@ import copy
 
 class Transaction():
     
-    def __init__(self, senderPublicKey, receiverPublicKey, amount, type):
-        self.senderPublicKey = senderPublicKey
-        self.receiverPublicKey = receiverPublicKey
+    def __init__(self, sender_public_key, receiver_public_key, amount, type):
+        self.sender_public_key = sender_public_key
+        self.receiver_public_key = receiver_public_key
         self.amount = amount
         self.type = type
         self.id = uuid.uuid1().hex
         self.time = time.time()
         self.signature = ''
 
-    def toJson(self):
+    def to_json(self):
         return self.__dict__
 
     def sign(self, signature):
         self.signature = signature
 
     def payload(self):
-        jsonRepresentation = copy.deepcopy(self.toJson())
-        jsonRepresentation['signature'] = ''
-        return jsonRepresentation
+        json_representation = copy.deepcopy(self.to_json())
+        json_representation['signature'] = ''
+        return json_representation
 
     ## TODO Improve this method.
     def equals(self, transaction):

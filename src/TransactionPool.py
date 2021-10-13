@@ -6,9 +6,9 @@ class TransactionPool():
     def addTransaction(self, transaction):
         self.transactions.append(transaction)
 
-    def transactionExists(self, transaction):
-        for poolTransaction in self.transactions:
-            if poolTransaction.equals(transaction):
+    def transaction_exists(self, transaction):
+        for pool_transaction in self.transactions:
+            if pool_transaction.equals(transaction):
                 return True
         return False
 

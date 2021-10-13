@@ -25,13 +25,13 @@ class NodeAPI(FlaskView):
 
     @route('/blockchain', methods=['GET'])
     def blockchain(self):
-        return node.blockchain.toJson(), 200
+        return node.blockchain.to_json(), 200
 
     @route('transaction_pool', methods=['GET'])
     def transaction_pool(self):
         transactions = {}
         for counter, transaction in enumerate(node.transaction_pool.transactions):
-            transactions[counter] = transaction.toJson()
+            transactions[counter] = transaction.to_json()
         return jsonify(transactions), 200
 
     @route('transaction', methods=['POST'])
@@ -40,6 +40,6 @@ class NodeAPI(FlaskView):
         if not 'transaction' in values:
             return 'Missing transaction value', 400
         transaction = BlockchainUtils.decode(values['transaction'])
-        # handle transaction method
+        node.handle_transaction(transaction)
         response = {'message': 'Received transaction'}
         return jsonify(response), 201
