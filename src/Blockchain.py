@@ -10,7 +10,7 @@ class Blockchain():
         self.account_model = AccountModel()
         self.pos = ProofOfStake()
 
-    def addBlock(self, block):
+    def add_block(self, block):
         self.execute_transactions(block.transactions)
         self.blocks.append(block)
 
@@ -25,7 +25,7 @@ class Blockchain():
     def block_count_valid(self, block):
         return self.blocks[-1].block_count == block.block_count - 1
 
-    def lastBlockHashValid(self, block):
+    def last_block_hash_valid(self, block):
         latestBlockchainBlockHash = BlockchainUtils.hash(self.blocks[-1].payload()).hexdigest()
         return latestBlockchainBlockHash == block.last_hash
 
@@ -79,3 +79,13 @@ class Blockchain():
                 if transaction.equals(block_transaction):
                     return True
         return False
+
+    def forger_valid(self, block):
+        forger_public_key = self.pos.forger(block.last_hash)
+        proposed_block_forger = block.forger
+        return forger_public_key == proposed_block_forger
+
+    def transaction_valid(self, transactions):
+        covered_transactions = self.get_covered_transaction_set(transactions)
+        return len(covered_transactions) == len(transactions)
+
