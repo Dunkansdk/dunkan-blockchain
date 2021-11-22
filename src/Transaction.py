@@ -1,6 +1,8 @@
 import uuid
 import time
 import copy
+from eth_keys.datatypes import Signature
+import json
 
 class Transaction():
     
@@ -14,7 +16,15 @@ class Transaction():
         self.signature = ''
 
     def to_json(self):
-        return self.__dict__
+        data = {}
+        data['sender_public_key'] = self.sender_public_key
+        data['receiver_public_key'] = self.receiver_public_key
+        data['amount'] = self.amount
+        data['id'] = self.id
+        data['time'] = self.time
+        if(self.signature != ''):
+            data['signature'] = self.signature.__str__()
+        return data
 
     def sign(self, signature):
         self.signature = signature

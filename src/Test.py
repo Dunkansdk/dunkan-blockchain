@@ -12,7 +12,7 @@ def get_random_string(length):
 
 if __name__ == '__main__':
     pos = ProofOfStake()
-    pos.update('dunkan', 10)
+    pos.update('dunkan', 100)
     pos.update('bone', 100)
 
     dunkan_wins = 0

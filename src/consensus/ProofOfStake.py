@@ -1,6 +1,7 @@
 from consensus.Lot import Lot
 from BlockchainUtils import BlockchainUtils
 import sys
+
 class ProofOfStake():
 
     def __init__(self):
@@ -27,6 +28,7 @@ class ProofOfStake():
     def validator_lots(self, seed):
         lots = []
         for validator in self.stakers.keys():
+            print('Validator: ', validator)
             for stake in range(self.get(validator)):
                 lots.append(Lot(validator, stake + 1, seed))
         return lots

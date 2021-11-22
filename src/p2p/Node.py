@@ -87,6 +87,8 @@ class Node():
 
     def forge(self):
         forger = self.blockchain.next_forger()
+        print('Forger: ', forger)
+        print('Wallet: ', self.wallet.public_key_string())
         if forger == self.wallet.public_key_string():
             print('i am the next forger')
             block = self.blockchain.create_block(self.transaction_pool.transactions, self.wallet)

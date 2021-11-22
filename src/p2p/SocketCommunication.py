@@ -26,11 +26,11 @@ class SocketCommunication(Node):
 
     def inbound_node_connected(self, node):
         self.peer_discovery_handler.handshake(node)
-        #return super().inbound_node_connected(node)
+        return super().inbound_node_connected(node)
 
     def outbound_node_connected(self, node):
         self.peer_discovery_handler.handshake(node)
-        #return super().outbound_node_connected(node)
+        return super().outbound_node_connected(node)
 
     def node_message(self, node, message):
         message = BlockchainUtils.decode(json.dumps(message))
