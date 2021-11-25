@@ -87,14 +87,12 @@ class Node():
 
     def forge(self):
         forger = self.blockchain.next_forger()
-        print('Forger: ', forger)
-        print('Wallet: ', self.wallet.public_key_string())
         if forger == self.wallet.public_key_string():
-            print('i am the next forger')
             block = self.blockchain.create_block(self.transaction_pool.transactions, self.wallet)
             self.transaction_pool.remove_from_pool(block.transactions)
             message = Message(self.p2p.socket_connector, 'BLOCK', block)
             encoded_message = BlockchainUtils.encode(message)
+            print('Forging block: ', message.data.to_json())
             self.p2p.broadcast(encoded_message)
-        else:
-            print('i am not the next forger')
+        #else:
+        #    print('i am not the next forger')

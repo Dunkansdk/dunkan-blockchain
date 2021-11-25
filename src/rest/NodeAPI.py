@@ -32,7 +32,6 @@ class NodeAPI(FlaskView):
         transactions = {}
         for counter, transaction in enumerate(node.transaction_pool.transactions):
             transactions[counter] = transaction.to_json()
-        print('asd:', jsonify(transactions))
         return jsonify(transactions), 200
 
     @route('transaction', methods=['POST'])

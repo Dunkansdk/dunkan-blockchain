@@ -24,7 +24,8 @@ class Block():
         data['forger'] = self.forger
         data['block_count'] = self.block_count
         data['timestamp'] = self.timestamp
-        data['signature'] = self.signature
+        if(self.signature != ''):
+            data['signature'] = self.signature.__str__()
         json_transactions = []
         for transaction in self.transactions:
             json_transactions.append(transaction.to_json())
