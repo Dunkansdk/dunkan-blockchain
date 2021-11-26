@@ -1,4 +1,5 @@
 from Crypto.PublicKey import RSA
+import eth_utils
 from BlockchainUtils import BlockchainUtils
 from Transaction import Transaction
 from Block import Block
@@ -12,11 +13,9 @@ class Wallet():
     def __init__(self, private_key=None):
             self.key_pair = keys.PrivateKey((os.urandom(32)))            
 
-    # Read the key from a file
-    def from_key(self, file):
-        with open(file, 'r') as keyfile:
-            private_key_hex = keyfile.read()
-            private_key_bytes = decode_hex(private_key_hex)
+    def from_key(self, private_key):
+        if private_key:
+            private_key_bytes = decode_hex(private_key)
             self.key_pair = keys.PrivateKey(private_key_bytes)
 
     def sign(self, data):

@@ -11,15 +11,15 @@ import copy
 
 class Node():
     
-    def __init__(self, ip, port, key_file = None):
+    def __init__(self, ip, port, private_key = None):
         self.p2p = None
         self.ip = ip
         self.port = port
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
         self.blockchain = Blockchain()
-        if key_file is not None:
-            self.wallet.from_key(sys.path[0] + key_file)
+        if private_key is not None:
+            self.wallet.from_key(private_key)
 
     def start_p2p(self):
         self.p2p = SocketCommunication(self.ip, self.port)
