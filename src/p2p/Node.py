@@ -17,9 +17,11 @@ class Node():
         self.port = port
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
-        self.blockchain = Blockchain()
         if private_key is not None:
+            self.blockchain = Blockchain(private_key)
             self.wallet.from_key(private_key)
+        else:
+            self.blockchain = Blockchain()
 
     def start_p2p(self):
         self.p2p = SocketCommunication(self.ip, self.port)
@@ -88,11 +90,12 @@ class Node():
     def forge(self):
         forger = self.blockchain.next_forger()
         if forger == self.wallet.public_key_string():
+            print('NEXT FORGER: ', forger)
             block = self.blockchain.create_block(self.transaction_pool.transactions, self.wallet)
             self.transaction_pool.remove_from_pool(block.transactions)
             message = Message(self.p2p.socket_connector, 'BLOCK', block)
             encoded_message = BlockchainUtils.encode(message)
             print('Forging block: ', message.data.to_json())
             self.p2p.broadcast(encoded_message)
-        #else:
-        #    print('i am not the next forger')
+        else:
+            print('NOT NEXT FORGER ', forger)

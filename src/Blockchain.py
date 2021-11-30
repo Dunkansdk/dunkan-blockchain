@@ -5,10 +5,13 @@ from consensus.ProofOfStake import ProofOfStake
 
 class Blockchain():
     
-    def __init__(self):
+    def __init__(self, node_private_key = None):
         self.blocks = [Block.genesis()]
         self.account_model = AccountModel()
-        self.pos = ProofOfStake()
+        if node_private_key is not None:
+            self.pos = ProofOfStake(node_private_key)
+        else:
+            self.pos = ProofOfStake()
 
     def add_block(self, block):
         self.execute_transactions(block.transactions)
@@ -35,13 +38,14 @@ class Blockchain():
             if self.transaction_covered(transaction):
                 covered_transactions.append(transaction)
             else:
-                print('Transaction is not covered by sender')
+                print('Transaction is not covered by sender: ', transaction.sender_public_key)
         return covered_transactions
 
     def transaction_covered(self, transaction):
         if transaction.type == 'EXCHANGE':
             return True
 
+        # TODO: Get balance no esta funcionando bien.
         sender_balance = self.account_model.get_balance(transaction.sender_public_key)
         return sender_balance >= transaction.amount
 

@@ -1,5 +1,3 @@
-from Crypto.PublicKey import RSA
-import eth_utils
 from BlockchainUtils import BlockchainUtils
 from Transaction import Transaction
 from Block import Block

@@ -15,14 +15,14 @@ class PeerDiscoveryHandler():
         discovery_thread = threading.Thread(target=self.discovery, args={})
         discovery_thread.start()
     
-    '''
+    
     def status(self):
         while True:
             print('Currenct Connections:')
             for peer in self.socket_communication.peers:
                 print(str(peer.ip) + ':' + str(peer.port))
             time.sleep(10)
-    '''
+    
 
     def discovery(self):
         while True:

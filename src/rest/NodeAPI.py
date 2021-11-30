@@ -1,6 +1,5 @@
 from flask_classful import FlaskView, route
 from flask import Flask, json, jsonify, request
-
 from BlockchainUtils import BlockchainUtils
 
 # limited by flask architecture
@@ -16,7 +15,7 @@ class NodeAPI(FlaskView):
         self.app.run(host='localhost', port=api_port)
 
     def inject_node(self, injected_node):
-        global node 
+        global node
         node = injected_node
 
     @route('/info', methods=['GET'])
@@ -43,3 +42,7 @@ class NodeAPI(FlaskView):
         node.handle_transaction(transaction)
         response = {'message': 'Received transaction'}
         return jsonify(response), 201
+
+    @route('accounts', methods=['GET'])
+    def accounts(self):
+        return node.blockchain.account_model.to_json(), 200
